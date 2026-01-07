@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Malla Curricular – Diseño Industrial</title>
+
+<style>
+:root{
+  --rosa-1:#fde2eb;
+  --rosa-2:#f8b8cf;
+  --rosa-3:#e78fb3;
+  --rosa-ok:#c1e1c1;
+  --bloqueada:#f4f4f4;
+  --texto:#5a3a4e;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'Segoe UI','Poppins',sans-serif;
+}
+
+body{
+  margin:0;
+  background:linear-gradient(120deg,var(--rosa-1),#fff);
+  color:var(--texto);
+}
+
+h1{
+  text-align:center;
+  margin:30px 0;
+  font-weight:300;
+}
+
+.malla{
+  display:flex;
+  gap:20px;
+  padding:20px;
+  overflow-x:auto;
+}
+
+.columna{
+  min-width:280px;
+  background:#fff;
+  border-radius:18px;
+  padding:15px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+.columna h2{
+  text-align:center;
+  font-size:18px;
+  margin-bottom:10px;
+  color:var(--rosa-3);
+}
+
+.semestre{
+  margin-bottom:15px;
+}
+
+.semestre h3{
+  font-size:14px;
+  font-weight:500;
+  margin:10px 0;
+  border-bottom:1px dashed var(--rosa-2);
+}
+
+.materia{
+  padding:8px 10px;
+  margin:6px 0;
+  border-radius:12px;
+  background:var(--rosa-1);
+  cursor:pointer;
+  transition:all .2s ease;
+  position:relative;
+  font-size:13px;
+}
+
+.materia:hover{
+  transform:scale(1.02);
+}
+
+.materia.aprobada{
+  background:var(--rosa-ok);
+  text-decoration:line-through;
+}
+
+.materia.bloqueada{
+  background:var(--bloqueada);
+  color:#999;
+  cursor:not-allowed;
+}
+
+.materia.bloqueada::after{
+  content:attr(data-tooltip);
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:110%;
+  background:#333;
+  color:#fff;
+  padding:6px 8px;
+  font-size:11px;
+  border-radius:8px;
+  white-space:pre-line;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+}
+
+.materia.bloqueada:hover::after{
+  opacity:1;
+}
+</style>
+</head>
+
+<body>
+<h1>Malla Curricular – Diseño Industrial (Perfil)</h1>
+
+<div class="malla" id="malla"></div>
+
+<script>
+const materias = {
+"Diseno 1":[],
+"Identidad Visual 1":[],
+"Medios de expresion 1":[],
+"Matematica/Fisica":[],
+"Laboratorio de modelos y maquetas 1":[],
+"Introduccion al pensamiento de diseno":[],
+"Matematica":[],
+"Fisica":[],
+"Configuracion y desempeno en equipos de alta performance":[],
+"Unidad de proyecto 1":["Diseno 1","Identidad Visual 1","Medios de expresion 1"],
+"Comunicacion 1":[],
+"Diseno 2":["Unidad de proyecto 1"],
+"Ergonomia 1":[],
+"Fotografia y video":[],
+"Historia del diseno 1":[],
+"Lab ceramica 1":[],
+"Lab maderas 1":[],
+"Lab vidrio 1":[],
+"Medios de expresion 2":["Medios de expresion 1"],
+"Tecnologia 1":[],
+"Diseno de envases":["Unidad de proyecto 1"],
+"Lab metales 1":[],
+"Marketing 1":[],
+"Unidad de proyecto 2":["Unidad de proyecto 1","Medios de expresion 2","Ergonomia 1","Diseno 2","Tecnologia 1"],
+"Diseno 3":["Unidad de proyecto 2"],
+"Ergonomia 2":["Ergonomia 1"],
+"Lab metales 2":["Lab metales 1"],
+"Lab vidrio 2":["Lab vidrio 1"],
+"Marketing 2":["Marketing 1"],
+"Medios de expresion 3":["Medios de expresion 2"],
+"Sociologia":["Introduccion al pensamiento de diseno","Comunicacion 1","Configuracion y desempeno en equipos de alta performance"],
+"Tecnologia 2":["Tecnologia 1"],
+"Teoria del diseno 1":["Introduccion al pensamiento de diseno","Historia del diseno 1","Configuracion y desempeno en equipos de alta performance"],
+"Lab ceramica 2":["Lab ceramica 1"],
+"Lab fabricacion digital":["Tecnologia 1"],
+"Lab maderas 2":["Lab maderas 1"],
+"Metodologia 1":["Introduccion al pensamiento de diseno","Configuracion y desempeno en equipos de alta performance"],
+"Unidad de proyecto 3":["Unidad de proyecto 2","Marketing 1","Diseno 3","Ergonomia 2","Tecnologia 2"],
+"Analisis y experiencia del usuario":["Ergonomia 2","Teoria del diseno 1","Sociologia"],
+"Diseno 4":["Unidad de proyecto 3"],
+"Gestion de calidad":["Unidad de proyecto 2"],
+"Gestion de la propiedad intelectual":[],
+"Gestion de proyectos":[],
+"Metodologia 2":["Metodologia 1"],
+"Modelado 3D para produccion digital":[],
+"Teoria del diseno 2":["Teoria del diseno 1","Sociologia"],
+"Trabajo de grado":["Metodologia 2","Diseno 4"],
+"Unidad de proyecto 4":["Gestion de proyectos","Diseno 4","Unidad de proyecto 3"]
+};
+
+const estructura = [
+{titulo:"CBC / 1° Año – 1° Sem", materias:["Diseno 1","Identidad Visual 1","Medios de expresion 1","Matematica/Fisica","Laboratorio de modelos y maquetas 1","Introduccion al pensamiento de diseno"]},
+{titulo:"1° Año – 2° Sem", materias:["Matematica","Fisica","Configuracion y desempeno en equipos de alta performance","Unidad de proyecto 1"]},
+{titulo:"2° Año – 1° Sem", materias:["Comunicacion 1","Diseno 2","Ergonomia 1","Fotografia y video","Historia del diseno 1","Lab ceramica 1","Lab maderas 1","Lab vidrio 1","Medios de expresion 2","Tecnologia 1"]},
+{titulo:"2° Año – 2° Sem", materias:["Diseno de envases","Fotografia y video","Lab metales 1","Lab vidrio 1","Marketing 1","Unidad de proyecto 2"]},
+{titulo:"3° Año – 1° Sem", materias:["Diseno 3","Ergonomia 2","Lab metales 2","Lab vidrio 2","Marketing 2","Medios de expresion 3","Sociologia","Tecnologia 2","Teoria del diseno 1"]},
+{titulo:"3° Año – 2° Sem", materias:["Lab ceramica 2","Lab fabricacion digital","Lab maderas 2","Metodologia 1","Unidad de proyecto 3"]},
+{titulo:"4° Año – 1° Sem", materias:["Analisis y experiencia del usuario","Diseno 4","Gestion de calidad","Gestion de la propiedad intelectual","Gestion de proyectos","Metodologia 2","Modelado 3D para produccion digital","Teoria del diseno 2","Trabajo de grado"]},
+{titulo:"4° Año – 2° Sem", materias:["Gestion de la propiedad intelectual","Unidad de proyecto 4","Trabajo de grado"]}
+];
+
+let aprobadas = JSON.parse(localStorage.getItem("aprobadas")||"[]");
+
+function crearMalla(){
+  const cont=document.getElementById("malla");
+  cont.innerHTML="";
+  estructura.forEach(col=>{
+    const c=document.createElement("div");
+    c.className="columna";
+    c.innerHTML=`<h2>${col.titulo}</h2>`;
+    col.materias.forEach(m=>{
+      const div=document.createElement("div");
+      div.className="materia";
+      div.textContent=m;
+
+      const req=materias[m]||[];
+      const faltan=req.filter(r=>!aprobadas.includes(r));
+
+      if(aprobadas.includes(m)){
+        div.classList.add("aprobada");
+      }else if(faltan.length){
+        div.classList.add("bloqueada");
+        div.dataset.tooltip="Falta aprobar:\n"+faltan.join("\n");
+      }
+
+      div.onclick=()=>{
+        if(div.classList.contains("bloqueada"))return;
+        if(aprobadas.includes(m)){
+          aprobadas=aprobadas.filter(x=>x!==m);
+        }else{
+          aprobadas.push(m);
+        }
+        localStorage.setItem("aprobadas",JSON.stringify(aprobadas));
+        crearMalla();
+      };
+
+      c.appendChild(div);
+    });
+    cont.appendChild(c);
+  });
+}
+
+crearMalla();
+</script>
+</body>
+</html>
